@@ -1,3 +1,12 @@
+'''
+Author: airscker
+Date: 2024-10-26 23:24:15
+LastEditors: airscker
+LastEditTime: 2024-10-29 15:01:42
+Description: NULL
+
+Copyright (C) 2024 by Airscker(Yufeng), All Rights Reserved. 
+'''
 import jax
 import numpy as np
 import jax.numpy as jnp

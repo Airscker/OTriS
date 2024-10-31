@@ -1,3 +1,12 @@
+'''
+Author: airscker
+Date: 2024-10-29 01:58:49
+LastEditors: airscker
+LastEditTime: 2024-10-29 15:01:49
+Description: NULL
+
+Copyright (C) 2024 by Airscker(Yufeng), All Rights Reserved. 
+'''
 import pickle as pkl
 import netket as nk
 from netket.exact import lanczos_ed
