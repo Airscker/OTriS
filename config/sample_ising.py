@@ -15,7 +15,8 @@ model = dict(backbone='TransformerModel',
                        ffn_dim=32,
                        vocab_size=lattice_length**lattice_dim,
                        max_length=lattice_length**lattice_dim))
-vstate=dict(n_samples=1008)
+vstate=dict(backbone='MCState',params=dict(n_samples=1008))
+driver = dict(backbone='VMC')
 work_config = dict(work_dir='./dev')
 checkpoint_config = dict(load_from='E:\OneDrive\StonyBrook\QML\dev', save_inter=50)
 optimizer = dict(backbone='Adam', params=dict(learning_rate=0.0001, b1= 0.9, b2 = 0.999, eps = 1e-8))

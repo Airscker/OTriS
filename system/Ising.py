@@ -2,7 +2,7 @@
 Author: airscker
 Date: 2024-10-29 01:58:49
 LastEditors: airscker
-LastEditTime: 2024-10-29 15:01:49
+LastEditTime: 2024-11-12 17:06:49
 Description: NULL
 
 Copyright (C) 2024 by Airscker(Yufeng), All Rights Reserved. 
@@ -10,8 +10,9 @@ Copyright (C) 2024 by Airscker(Yufeng), All Rights Reserved.
 import pickle as pkl
 import netket as nk
 from netket.exact import lanczos_ed
+from ._base import _Base_System
 
-class Ising_System:
+class Ising_System(_Base_System):
     def __init__(self,
                 Lattice_length:int=4,
                 Lattice_dim:int=2,
@@ -20,6 +21,7 @@ class Ising_System:
                 Coupling:float=-1,
                 Field_tranverse:float=-0.5,
                 ) -> None:
+        super().__init__()
         self.Lattice_length=Lattice_length
         self.Lattice_dim=Lattice_dim
         self.PBC=PBC
@@ -36,7 +38,7 @@ class Ising_System:
         self.str_repr=f'{self.__class__.__name__}\n\tLattice_length={self.Lattice_length}\n\tLattice_dim={self.Lattice_dim}\n\tPBC={self.PBC}\n\tSpin={self.Spin}\n\tCoupling={self.Coupling}\n\tField_tranverse={self.Field_tranverse}\n\tHilbert_space={self.Hilbert_space}\n\tHamiltonian={self.Hamiltonian}\nLattice_graph={self.Lattice_graph}'
     
     def eigen_energies(self, n_eigen:int=4):
-        return lanczos_ed(self.Hamiltonian, k=n_eigen)
+        return super().eigen_energies(n_eigen)
 
     def __str__(self):
         return self.str_repr
