@@ -2,7 +2,7 @@
 Author: airscker
 Date: 2024-10-29 01:06:10
 LastEditors: airscker
-LastEditTime: 2024-11-12 18:53:20
+LastEditTime: 2024-11-12 18:56:42
 Description: NULL
 
 Copyright (C) 2024 by Airscker(Yufeng), All Rights Reserved. 
@@ -84,7 +84,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--config',
                         '-c',
-                        default='E:\OneDrive\StonyBrook\QML\OTriS\config\sample_ising.py',
+                        default='E:\OneDrive\StonyBrook\QML\OTriS\config\sample_lindblad.py',
                         type=str,
                         help='the path of config file')
     args = parser.parse_args()
