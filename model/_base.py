@@ -1,3 +1,12 @@
+'''
+Author: airscker
+Date: 2024-10-29 01:28:28
+LastEditors: airscker
+LastEditTime: 2024-10-29 15:01:31
+Description: NULL
+
+Copyright (C) 2024 by Airscker(Yufeng), All Rights Reserved. 
+'''
 import flax.linen as nn
 from abc import ABCMeta, abstractmethod
 

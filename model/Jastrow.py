@@ -1,3 +1,12 @@
+'''
+Author: airscker
+Date: 2024-10-28 17:08:12
+LastEditors: airscker
+LastEditTime: 2024-10-29 15:01:38
+Description: NULL
+
+Copyright (C) 2024 by Airscker(Yufeng), All Rights Reserved. 
+'''
 import flax.linen as nn
 import jax.numpy as jnp
 
