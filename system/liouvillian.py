@@ -2,12 +2,14 @@
 Author: airscker
 Date: 2024-11-12 16:24:52
 LastEditors: airscker
-LastEditTime: 2024-11-12 18:50:58
+LastEditTime: 2024-11-13 00:59:51
 Description: NULL
 
 Copyright (C) 2024 by Airscker(Yufeng), All Rights Reserved. 
 '''
 
+import os
+import matplotlib.pyplot as plt
 import netket as nk
 from netket.exact import lanczos_ed
 from ._base import _Base_System
@@ -57,6 +59,44 @@ class Liouvillian_System(_Base_System):
         self.str_repr=f'{self.__class__.__name__}\n\tLattice_length={self.Lattice_length}\n\tLattice_dim={self.Lattice_dim}\n\tPBC={self.PBC}\n\tSpin={self.Spin}\n\tCoupling={self.Coupling}\n\tHilbert_space={self.Hilbert_space}\n\tHamiltonian={self.Hamiltonian}\nLattice_graph={self.Lattice_graph}'
     def eigen_energies(self, n_eigen:int=4):
         return None
+
+    def plot(self,log_data,workdir):
+        try:
+            obs_list=['Sx', 'Sy', 'Sz']
+            print(f'Plotting observables: {obs_list}')
+            for obs_name, obs_data in log_data.items():
+                if obs_name not in obs_list:
+                    continue
+                iters = obs_data['iters']
+                mean_real = obs_data['Mean']['real']
+                mean_imag = obs_data['Mean'].get('imag', [0] * len(mean_real))  # 如果没有虚部，默认为0
+
+                # Plot Real Part
+                plt.figure(figsize=(10, 6))
+                plt.plot(iters, mean_real, label=f'{obs_name} real')
+                plt.xlabel('iter')
+                plt.ylabel('mean')
+                plt.title(f'{obs_name} real change with iter')
+                plt.legend()
+                plt.grid(True)
+                plt.savefig(os.path.join(workdir,f'{obs_name}_real.png'))
+                plt.close()
+                print(f'{obs_name}_real.png saved in {workdir}')
+                # If Imaginary Part exists, plot it
+                
+                plt.figure(figsize=(10, 6))
+                plt.plot(iters, mean_imag, label=f'{obs_name} imag', color='orange')
+                plt.xlabel('iter')
+                plt.ylabel('mean')
+                plt.title(f'{obs_name} imag change with iter')
+                plt.legend()
+                plt.grid(True)
+                plt.savefig(os.path.join(workdir,f'{obs_name}_imag.png'))
+                plt.close()
+                print(f'{obs_name}_imag.png saved in {workdir}')
+        except:
+            print('Failed to obseravbles, please check the log data')
+
     def __str__(self):
         return self.str_repr
     def __repr__(self):

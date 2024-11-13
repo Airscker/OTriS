@@ -2,7 +2,7 @@
 Author: airscker
 Date: 2024-10-29 01:06:10
 LastEditors: airscker
-LastEditTime: 2024-11-12 18:56:42
+LastEditTime: 2024-11-13 01:00:37
 Description: NULL
 
 Copyright (C) 2024 by Airscker(Yufeng), All Rights Reserved. 
@@ -64,21 +64,8 @@ def main(exp_config:Config):
         print('Failed to calculate exact GS energy')
         E_eigen=None
 
-    try:
-        plt.figure(figsize=(10, 6))
-        log_data = load_log(os.path.join(workdir, "log.log"))
-        iters=log_data['Energy']['iters']
-        E_mean=log_data['Energy']['Mean']
-        plt.plot(iters,E_mean)
-        plt.hlines([E_eigen], xmin=min(iters), xmax=max(iters), color='black', label=f"Exact GS energy: {E_eigen}")
-        plt.xlabel('Iteration')
-        plt.ylabel('Energy')
-        plt.legend()
-        plt.grid()
-        plt.savefig(os.path.join(workdir, 'Energy.png'), dpi=300, bbox_inches='tight', pad_inches=0.1)
-        print('Energy convergence plot saved in', os.path.join(workdir, 'Energy.png'))
-    except:
-        print('Failed to plot energy convergence')
+    log_data = load_log(os.path.join(workdir, "log.log"))
+    system.plot(log_data, workdir)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
