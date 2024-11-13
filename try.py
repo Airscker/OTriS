@@ -62,3 +62,34 @@ ss = nk.SteadyState(lind, op, variational_state=vs, preconditioner=sr)
 obs = {"Sx": obs_sx, "Sy": obs_sy, "Sz": obs_sz}
 
 out = ss.run(n_iter=300, out="test", obs=obs)
+with open('test.log', 'r') as f:
+    data = json.load(f)
+
+
+for obs_name, obs_data in data.items():
+    iters = obs_data['iters']
+    mean_real = obs_data['Mean']['real']
+    mean_imag = obs_data['Mean']['real']
+
+
+    plt.figure()
+    plt.plot(iters, mean_real, label=f'{obs_name} real')
+    plt.xlabel('iter')
+    plt.ylabel('mean')
+    plt.title(f'{obs_name} real change with iter')
+    plt.legend()
+    plt.grid(True)
+    plt.savefig(f'{obs_name}_real.png')
+
+
+    if any(mean_imag):
+        plt.figure()
+        plt.plot(iters, mean_imag, label=f'{obs_name} imag', color='orange')
+        plt.xlabel('iter')
+        plt.ylabel('mean')
+        plt.title(f'{obs_name} imag change with iter')
+        plt.legend()
+        plt.grid(True)
+        plt.savefig(f'{obs_name}_imag.png')
+
+plt.show()
