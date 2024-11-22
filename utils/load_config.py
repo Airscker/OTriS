@@ -2,7 +2,7 @@
 Author: airscker
 Date: 2024-10-29 01:42:31
 LastEditors: airscker
-LastEditTime: 2024-11-21 22:05:26
+LastEditTime: 2024-11-21 23:01:43
 Description: NULL
 
 Copyright (C) 2024 by Airscker(Yufeng), All Rights Reserved. 
@@ -87,7 +87,7 @@ class Config:
         self.config_keys = dir(self.config)
         self.configpath = configpath
         self.global_env = globals()
-        self.systems:list[_Base_System]=self._build_system(import_module('system'))
+        self.systems:list[_Base_System]=self._build_system()
         self._check_config()
         # self.__para_config()
         # print(self.paras)
@@ -186,24 +186,20 @@ class Config:
     def _build_system(self)->list[_Base_System]:
         module=self.global_env[getattr(self.config,'system')['backbone']]
         system_info = getattr(self.config, 'system')
-        batch_params = system_info['batch_params']
         if 'params' not in system_info.keys():
             system_params = {}
         else:
             system_params = system_info['params']
+        self.system_params=system_params
         _systems=[]
-        _system_batched_para=[]
-        if batch_params is not None:
-            for key in batch_params.keys():
-                for value in batch_params[key]:
-                    system_params = system_info['params']
-                    system_params[key]=value
-                    _systems.append(module(**system_params))
-                    _system_batched_para.append(dict(key=value))
-        else:
-            _systems.append(module(**system_params))
+        if 'Coupling' in system_info.keys():
+            couplings=system_info['Coupling']
+            for idx,_coupling in enumerate(couplings):
+                system_params['Coupling']=_coupling
+                _systems.append([_coupling,module(**system_params)])
         if len(_systems)>1:
             print(f'Multiple systems detected, {len(_systems)} systems will be trained.')
+        return _systems
 
     def __repr__(self) -> str:
         return readable_dict(self.paras)

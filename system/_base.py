@@ -25,7 +25,6 @@ class _Base_System(metaclass=ABCMeta):
         self.Hilbert_space=None
         self.Hamiltonian=None
         self.Observable=None
-        self.batch_params=None
     def eigen_energies(self, n_eigen:int=4):
         return lanczos_ed(self.Hamiltonian, k=n_eigen)
     def plot(self,log_data,workdir):
@@ -46,7 +45,7 @@ class _Base_System(metaclass=ABCMeta):
     def save_params(self,path):
         _params={}
         for _name in self.__dict__:
-            if _name not in ['Lattice_graph','Hilbert_space','Hamiltonian','Observable']:
+            if _name not in ['Lattice_graph','Hilbert_space','Hamiltonian','Observable','str_repr']:
                 _params[_name]=self.__dict__[_name]
         with open(path,'w+') as f:
             json.dump(_params,f)
