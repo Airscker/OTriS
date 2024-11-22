@@ -2,12 +2,13 @@
 Author: airscker
 Date: 2024-11-12 16:51:47
 LastEditors: airscker
-LastEditTime: 2024-11-13 00:45:43
+LastEditTime: 2024-11-21 22:42:01
 Description: NULL
 
 Copyright (C) 2024 by Airscker(Yufeng), All Rights Reserved. 
 '''
 import os
+import json
 import matplotlib.pyplot as plt
 from netket.exact import lanczos_ed
 from abc import ABCMeta, abstractmethod
@@ -24,6 +25,7 @@ class _Base_System(metaclass=ABCMeta):
         self.Hilbert_space=None
         self.Hamiltonian=None
         self.Observable=None
+        self.batch_params=None
     def eigen_energies(self, n_eigen:int=4):
         return lanczos_ed(self.Hamiltonian, k=n_eigen)
     def plot(self,log_data,workdir):
@@ -41,3 +43,10 @@ class _Base_System(metaclass=ABCMeta):
             print('Energy convergence plot saved in', os.path.join(workdir, 'Energy.png'))
         except:
             print('Failed to plot energy convergence')
+    def save_params(self,path):
+        _params={}
+        for _name in self.__dict__:
+            if _name not in ['Lattice_graph','Hilbert_space','Hamiltonian','Observable']:
+                _params[_name]=self.__dict__[_name]
+        with open(path,'w+') as f:
+            json.dump(_params,f)

@@ -5,9 +5,10 @@ system = dict(backbone='Liouvillian_System',
                         Lattice_dim=lattice_dim,
                         PBC=False,
                         Spin=0.5,
-                        Coupling=1, #gp
+                        Coupling=0, #gp
                         Field_tranverse=2 #vp
-                        ))
+                        ),
+            batch_params=dict(Coupling=[0.02 * i for i in range(151)]))
 model = dict(backbone='NDM',
             params=dict(beta=1))
 vstate=dict(backbone='MCMixedState',params=dict(n_samples=2000,

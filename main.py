@@ -2,7 +2,7 @@
 Author: airscker
 Date: 2024-10-29 01:06:10
 LastEditors: airscker
-LastEditTime: 2024-11-13 01:00:37
+LastEditTime: 2024-11-21 22:25:22
 Description: NULL
 
 Copyright (C) 2024 by Airscker(Yufeng), All Rights Reserved. 
@@ -18,18 +18,25 @@ from netket.vqs import VariationalState
 from utils import (Config,
                    load_state, save_state, load_log)
 from model import *
-from system import *
+from system import _Base_System
 from netket.optimizer import *
 
-def main(exp_config:Config):
+def create_dir(path):
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+def main(exp_config:Config,system:_Base_System=None, idx:int=0):
     global_env = globals()
-    system=exp_config._build_system(global_env)
+    # system=exp_config._build_system(global_env)
+    # systems=exp_config.systems
     print(system)
     workdir=exp_config.workdir
-    if not os.path.exists(workdir):
-        os.makedirs(workdir)
+    _sys_subdir=os.path.join(workdir, f"system_{idx}")
+    create_dir(_sys_subdir)
+    system.save_params(os.path.join(_sys_subdir, 'system_params.json'))
+
     exp_config.move_config(save_path=os.path.join(workdir, 'config.py'))
-    
+
     model=exp_config._build_model(global_env)
     print(model)
     sampler = nk.sampler.MetropolisLocal(system.Hilbert_space)
@@ -51,9 +58,9 @@ def main(exp_config:Config):
     
     vmc_dirver.run(n_iter=exp_config.epochs,
                    save_params_every=exp_config.save_inter,
-                   out=os.path.join(workdir, "log"),
+                   out=os.path.join(_sys_subdir, "log"),
                    obs=system.Observable)
-    save_state(vstate, os.path.join(workdir, "log.mpack"))
+    save_state(vstate, os.path.join(_sys_subdir, "log.mpack"))
     
 
     print('Calculating exact Ground State(GS) energy...')
@@ -64,8 +71,8 @@ def main(exp_config:Config):
         print('Failed to calculate exact GS energy')
         E_eigen=None
 
-    log_data = load_log(os.path.join(workdir, "log.log"))
-    system.plot(log_data, workdir)
+    # log_data = load_log(os.path.join(workdir, "log.log"))
+    # system.plot(log_data, workdir)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -77,4 +84,5 @@ if __name__ == "__main__":
     args = parser.parse_args()
     exp_config=Config(args.config)
     print(f"Experiment config:\n{exp_config}")
-    main(exp_config)
+    for idx,_sys in enumerate(exp_config.systems):
+        main(exp_config, _sys, idx)

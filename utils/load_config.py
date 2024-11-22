@@ -2,7 +2,7 @@
 Author: airscker
 Date: 2024-10-29 01:42:31
 LastEditors: airscker
-LastEditTime: 2024-11-12 18:47:24
+LastEditTime: 2024-11-21 22:05:26
 Description: NULL
 
 Copyright (C) 2024 by Airscker(Yufeng), All Rights Reserved. 
@@ -14,7 +14,7 @@ import warnings
 
 from yapf.yapflib.yapf_api import FormatCode
 from ._base import import_module, readable_dict, module_source
-from system import _Base_System
+from system import *
 import netket as nk
 
 
@@ -86,6 +86,8 @@ class Config:
             self.config = import_module(configpath)
         self.config_keys = dir(self.config)
         self.configpath = configpath
+        self.global_env = globals()
+        self.systems:list[_Base_System]=self._build_system(import_module('system'))
         self._check_config()
         # self.__para_config()
         # print(self.paras)
@@ -171,6 +173,7 @@ class Config:
     @property
     def epochs(self):
         return self.paras['hyperpara']['epochs']
+
     def _build_optimizer(self,imported_env):
         module=imported_env[getattr(self.config,'optimizer')['backbone']]
         optimizer_info = getattr(self.config, 'optimizer')
@@ -180,14 +183,27 @@ class Config:
             optimizer_params = optimizer_info['params']
         return module(**optimizer_params)
 
-    def _build_system(self,imported_env) -> _Base_System:
-        module=imported_env[getattr(self.config,'system')['backbone']]
+    def _build_system(self)->list[_Base_System]:
+        module=self.global_env[getattr(self.config,'system')['backbone']]
         system_info = getattr(self.config, 'system')
+        batch_params = system_info['batch_params']
         if 'params' not in system_info.keys():
             system_params = {}
         else:
             system_params = system_info['params']
-        return module(**system_params)
+        _systems=[]
+        _system_batched_para=[]
+        if batch_params is not None:
+            for key in batch_params.keys():
+                for value in batch_params[key]:
+                    system_params = system_info['params']
+                    system_params[key]=value
+                    _systems.append(module(**system_params))
+                    _system_batched_para.append(dict(key=value))
+        else:
+            _systems.append(module(**system_params))
+        if len(_systems)>1:
+            print(f'Multiple systems detected, {len(_systems)} systems will be trained.')
 
     def __repr__(self) -> str:
         return readable_dict(self.paras)
